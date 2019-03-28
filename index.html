@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/bulma/0.7.4/css/bulma.min.css"
+    />
+    <link rel="stylesheet" href="style.css" />
+    <title>Text-Entry Keyboard Experiment</title>
+  </head>
+  <body>
+    <section class="hero is-primary is-fullheight">
+      <div class="hero-body">
+        <div class="container has-text-centered">
+          <div id="app">
+            <div v-if="!hasExperimentStarted && !hasExperimentEnded">
+              <h1 class="title is-spaced">
+                Text-Entry Keyboard Experiment
+              </h1>
+              <button
+                class="button is-large is-primary is-inverted"
+                type="button"
+                @click="startExperiment"
+              >
+                Start
+              </button>
+            </div>
+
+            <div v-else-if="hasExperimentStarted && !hasTrialStarted">
+              <h1 class="title">
+                Trial {{ numTrials + 1 }} / {{ MAX_NUM_TRIALS }}
+              </h1>
+              <button
+                class="button is-large is-primary is-inverted"
+                type="button"
+                @click="startTrial"
+              >
+                Start
+              </button>
+            </div>
+
+            <div v-else-if="hasExperimentEnded">
+              <h1 class="title">Results</h1>
+              <table class="table is-striped is-fullwidth">
+                <thead>
+                  <tr>
+                    <th>Word</th>
+                    <th>Time (ms)</th>
+                    <th>Error</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  <tr v-for="r in results">
+                    <td v-for="data in r">
+                      {{ data }}
+                    </td>
+                  </tr>
+                </tbody>
+              </table>
+
+              <div class="field">
+                  <h2>Keyboard Specification:</h1>
+                <div class="control variables">
+                  <div class="select">
+                    <select v-model="keyboardType">
+                      <option value="standard">Standard</option>
+                      <option value="one-handed">One-handed</option>
+                    </select>
+                  </div>
+                  <div class="select">
+                    <select v-model="keyboardHeight">
+                      <option value="small">Small</option>
+                      <option value="normal">Normal</option>
+                      <option value="tall">Tall</option>
+                    </select>
+                  </div>
+                </div>
+              </div>
+              <button
+                class="button is-large is-primary is-inverted"
+                type="button"
+                :href="downloadLink"
+                :download="downloadFileName"
+              >
+                Download
+              </button>
+            </div>
+
+            <div v-else class="word">
+              <h1 class="title is-2">
+                {{ randomWord }}
+              </h1>
+              <div class="field">
+                <div class="control">
+                  <input
+                    type="text"
+                    v-focus
+                    v-model="userInput"
+                    @keyup.enter="saveInput"
+                    @keydown.delete.prevent
+                    class="input is-large"
+                  />
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+    <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
+    <script src="app.js"></script>
+  </body>
+</html>

@@ -1,0 +1,25 @@
+.hero-body {
+  justify-content: center;
+}
+
+#app {
+  height: 100%;
+}
+
+input {
+  text-align: center;
+}
+
+.select {
+  margin: 10px;
+}
+
+option[value=""][disabled] {
+  display: none;
+}
+
+.variables {
+  display: flex;
+  padding: 10px;
+  justify-content: center;
+}
