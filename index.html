@@ -83,7 +83,8 @@
                 class="button is-large is-primary is-inverted"
                 type="button"
                 :href="downloadLink"
-                download="results.csv"
+                target="_blank"
+                :download="downloadFileName"
               >
                 Download
               </button>
