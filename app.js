@@ -26,7 +26,7 @@ new Vue({
       "airport",
       "balloon",
       "bottle",
-      "bowl"
+      "bowl",
       "bugler",
       "button",
       "coffee",
