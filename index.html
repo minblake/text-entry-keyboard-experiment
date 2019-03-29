@@ -13,7 +13,7 @@
   </head>
   <body>
     <div id="app">
-      <section class="hero is-primary is-fullheight" :class="{'has-background-danger': isErrorChar}">
+      <section class="hero is-primary is-fullheight" :class="{ 'has-background-danger': hasTypedWrong }">
         <div class="hero-body">
           <div class="container has-text-centered">
             <div v-if="!hasExperimentStarted && !hasExperimentEnded">
@@ -47,6 +47,7 @@
               <table class="table is-striped is-fullwidth">
                 <thead>
                   <tr>
+                    <th>Trial</th>
                     <th>Word</th>
                     <th>Time (ms)</th>
                     <th>Error</th>
@@ -79,15 +80,13 @@
                   </div>
                 </div>
               </div>
-              <button
+              <a
                 class="button is-large is-primary is-inverted"
-                type="button"
                 :href="downloadLink"
-                target="_blank"
                 :download="downloadFileName"
               >
                 Download
-              </button>
+              </a>
             </div>
 
             <div v-else class="word">
@@ -100,9 +99,8 @@
                     type="text"
                     v-focus
                     v-model="userInput"
-                    @keyup="checkInputError"
-		    @keyup.enter="saveInput"
-                    @keydown.delete.prevent
+                    @keydown="isCorrectChar"
+                    @keyup="isFinished"
                     class="input is-large"
                   />
                 </div>

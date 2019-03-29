@@ -10,128 +10,7 @@ new Vue({
     MAX_NUM_TRIALS: 2,
     keyboardType: "standard",
     keyboardHeight: "small",
-    words: [
-      "used",
-      "ocean",
-      "noiseless",
-      "sea",
-      "stocking",
-      "communicate",
-      "reaction",
-      "canvas",
-      "sprout",
-      "lamp",
-      "time",
-      "advice",
-      "airport",
-      "balloon",
-      "bottle",
-      "bowl",
-      "bugler",
-      "button",
-      "coffee",
-      "tomato",
-      "carrot",
-      "chess",
-      "comet",
-      "database",
-      "cycle",
-      "earth",
-      "electricity",
-      "identify",
-      "journal",
-      "eraser",
-      "festival",
-      "future",
-      "steam",
-      "garden",
-      "guitar",
-      "gemstone",
-      "leather",
-      "magnet",
-      "meteor",
-      "monster",
-      "needle",
-      "onion",
-      "passport",
-      "pebble",
-      "pepper",
-      "perfume",
-      "pillow",
-      "plane",
-      "pocket",
-      "potato",
-      "printer",
-      "radar",
-      "rainbow",
-      "record",
-      "robot",
-      "rocket",
-      "satellite",
-      "skeleton",
-      "snail",
-      "software",
-      "space",
-      "sphere",
-      "square",
-      "survey",
-      "telescope",
-      "torpedo",
-      "train",
-      "triangle",
-      "umbrella",
-      "vampire",
-      "window",
-      "panic",
-      "obsolete",
-      "beagle",
-      "husky",
-      "bubble",
-      "develop",
-      "super",
-      "chill",
-      "lion",
-      "tinker",
-      "salty",
-      "squid",
-      "octopus",
-      "scatter",
-      "brain",
-      "memory",
-      "machine",
-      "complex",
-      "colour",
-      "slope",
-      "chalk",
-      "sponge",
-      "giraffe",
-      "monkey",
-      "signal",
-      "error",
-      "thunder",
-      "lazy",
-      "soup",
-      "drone",
-      "miniature",
-      "spoil",
-      "banjo",
-      "nostalgic",
-      "delete",
-      "fluffy",
-      "flood",
-      "butter",
-      "start",
-      "enter",
-      "home",
-      "return",
-      "invite",
-      "bug",
-      "sneaky",
-      "snow",
-      "event",
-      "silly",
-      "dust"
-    ],
+    words: [],
     results: [],
     temp: [],
     userInput: "",
@@ -140,9 +19,16 @@ new Vue({
     hasExperimentEnded: false,
     hasTrialStarted: false,
     hasTimerStarted: false,
+    hasTypedWrong: false,
+    numErrors: 0,
     time: { prev: 0, curr: 0 },
-    timer: null,
-    isErrorChar: false
+    timer: null
+  },
+  created() {
+    // fetch("words.txt")
+    //   .then(res => res.text())
+    //   .then(text => (this.words = text.split("\n")));
+    this.words = ["dust", "used"];
   },
   methods: {
     startExperiment() {
@@ -164,57 +50,47 @@ new Vue({
       this.hasExperimentStarted = false;
       this.hasTrialStarted = false;
     },
-    saveInput(e) {
-      if(!this.checkInputError(e)){
-        this.addResults();
-        this.userInput = "";
+    saveInput() {
+      this.addResults();
+      this.userInput = "";
 
-        if (this.words.length > 0) {
-          this.getRandomWord();
+      if (this.words.length > 0) {
+        this.getRandomWord();
+      } else {
+        this.stopTimer();
+        if (this.numTrials < this.MAX_NUM_TRIALS) {
+          this.hasTrialStarted = false;
         } else {
-          this.stopTimer();
-          if (this.numTrials < this.MAX_NUM_TRIALS) {
-            this.hasTrialStarted = false;
-          } else {
-            this.endExperiment();
-          }
+          this.endExperiment();
         }
       }
-      else {
-        //Don't go to the next word
-        e.preventDefault();
-      }
-      
     },
-    checkInputError(e) {
-      var currIndex;
-      var isSameChar;
-      var isEndChar;
-
-      currIndex = this.userInput.length - 1;
-      isSameChar = currIndex >= 0 && this.randomWord.length > currIndex && this.userInput.charAt(currIndex) == this.randomWord.charAt(currIndex);
-      isEndOfWord = e.key !== 'Enter' || currIndex == this.randomWord.length - 1;
-
-      if (!isSameChar || !isEndOfWord){
-        this.isErrorChar = true;
-
-        setTimeout(() => {
-          this.isErrorChar = false;
-        }, 300);
-
-        //Record error and then reset test
-        this.addResults();
-        this.userInput = "";
+    isFinished() {
+      if (this.userInput.toLowerCase() === this.randomWord) {
+        this.saveInput();
       }
+    },
+    isCorrectChar(e) {
+      let currIndex = this.userInput.length;
+      let key = "";
+      if (/[a-zA-z]/.test(String.fromCharCode(e.which))) {
+        key = e.key.toLowerCase();
+      }
+      if (!key || key !== this.randomWord[currIndex]) {
+        e.preventDefault();
+        this.numErrors++;
+        this.hasTypedWrong = true;
 
-      return !isSameChar || !isEndOfWord;
+        setTimeout(() => (this.hasTypedWrong = false), 300);
+      }
     },
     addResults() {
       const curr = this.time.curr;
       this.results.push([
+        this.numTrials,
         this.randomWord,
         curr - this.time.prev,
-        this.randomWord !== this.userInput
+        this.numErrors
       ]);
       this.time.prev = curr;
     },
