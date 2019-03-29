@@ -79,15 +79,13 @@
                   </div>
                 </div>
               </div>
-              <button
+              <a
                 class="button is-large is-primary is-inverted"
-                type="button"
                 :href="downloadLink"
-                target="_blank"
                 :download="downloadFileName"
               >
                 Download
-              </button>
+              </a>
             </div>
 
             <div v-else class="word">
@@ -101,7 +99,7 @@
                     v-focus
                     v-model="userInput"
                     @keyup="checkInputError"
-		    @keyup.enter="saveInput"
+		                @keyup.enter="saveInput"
                     @keydown.delete.prevent
                     class="input is-large"
                   />
