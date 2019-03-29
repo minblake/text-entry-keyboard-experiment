@@ -66,7 +66,7 @@ new Vue({
       }
     },
     isFinished() {
-      if (this.userInput === this.randomWord) {
+      if (this.userInput.toLowerCase() === this.randomWord) {
         this.saveInput();
       }
     },
@@ -87,6 +87,7 @@ new Vue({
     addResults() {
       const curr = this.time.curr;
       this.results.push([
+        this.numTrials,
         this.randomWord,
         curr - this.time.prev,
         this.numErrors
