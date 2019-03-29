@@ -102,9 +102,13 @@
                     @keydown="isCorrectChar"
                     @keyup="isFinished"
                     class="input is-large"
+                    :disabled = hasTypedWrong
                   />
                 </div>
               </div>
+              <h2 v-if="hasTypedWrong" class="title is-2">
+                {{errorMessage}}
+              </h2>
             </div>
           </div>
         </div>

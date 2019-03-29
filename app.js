@@ -22,7 +22,10 @@ new Vue({
     hasTypedWrong: false,
     numErrors: 0,
     time: { prev: 0, curr: 0 },
-    timer: null
+    timer: null,
+    errorMessage: null,
+    errorMessageCountdown: 3,
+    errorMessageTimer: null
   },
   created() {
     // fetch("words.txt")
@@ -55,6 +58,7 @@ new Vue({
       this.userInput = "";
 
       if (this.words.length > 0) {
+        this.numErrors = 0;
         this.getRandomWord();
       } else {
         this.stopTimer();
@@ -76,12 +80,34 @@ new Vue({
       if (/[a-zA-z]/.test(String.fromCharCode(e.which))) {
         key = e.key.toLowerCase();
       }
-      if (!key || key !== this.randomWord[currIndex]) {
+
+      if (!this.hasTypedWrong && (!key || key !== this.randomWord[currIndex])) {
         e.preventDefault();
         this.numErrors++;
         this.hasTypedWrong = true;
+        this.userInput = "";
+        this.stopTimer();
+        
+        this.errorMessageTimer = setInterval(() => {
+          this.$nextTick(() => {
+            this.errorMessage = `Please Try again in ${this.errorMessageCountdown}...`;
+            this.errorMessageCountdown--;
+          });
 
-        setTimeout(() => (this.hasTypedWrong = false), 300);
+          if(this.errorMessageCountdown == 0){
+            clearInterval(this.errorMessageTimer);
+            this.errorMessageCountdown = 3;
+            this.hasTypedWrong = false;
+            this.startTimer();
+          }
+        }, 1000);
+/*
+        setTimeout(() => {
+            clearInterval(this.errorMessageTimer);
+            this.errorMessageCountdown = 5;
+            this.hasTypedWrong = false;
+            this.startTimer();
+          }, 3000);*/
       }
     },
     addResults() {
