@@ -100,8 +100,8 @@
                     type="text"
                     v-focus
                     v-model="userInput"
-                    @keyup="checkInput"
-                    @keyup.enter="saveInput"
+                    @keyup="checkInputError"
+		    @keyup.enter="saveInput"
                     @keydown.delete.prevent
                     class="input is-large"
                   />

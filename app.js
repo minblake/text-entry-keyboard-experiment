@@ -56,41 +56,50 @@ new Vue({
       this.hasExperimentStarted = false;
       this.hasTrialStarted = false;
     },
-    saveInput() {
-      this.addResults();
-      this.userInput = "";
+    saveInput(e) {
+      if(!this.checkInputError(e)){
+        this.addResults();
+        this.userInput = "";
 
-      if (this.words.length > 0) {
-        this.getRandomWord();
-      } else {
-        this.stopTimer();
-        if (this.numTrials < this.MAX_NUM_TRIALS) {
-          this.hasTrialStarted = false;
+        if (this.words.length > 0) {
+          this.getRandomWord();
         } else {
-          this.endExperiment();
+          this.stopTimer();
+          if (this.numTrials < this.MAX_NUM_TRIALS) {
+            this.hasTrialStarted = false;
+          } else {
+            this.endExperiment();
+          }
         }
       }
+      else {
+        //Don't go to the next word
+        e.preventDefault();
+      }
+      
     },
-    checkInput() {
+    checkInputError(e) {
       var currIndex;
       var isSameChar;
       var isEndChar;
 
       currIndex = this.userInput.length - 1;
-      isSameChar = this.randomWord.length > currIndex && this.userInput.charAt(currIndex) == this.randomWord.charAt(currIndex);
-      isEndChar = this.randomWord.length == currIndex && this.userInput.charAt(currIndex) == '\n';
+      isSameChar = currIndex >= 0 && this.randomWord.length > currIndex && this.userInput.charAt(currIndex) == this.randomWord.charAt(currIndex);
+      isEndOfWord = e.key !== 'Enter' || currIndex == this.randomWord.length - 1;
 
-      if (!isSameChar && !isEndChar){
+      if (!isSameChar || !isEndOfWord){
         this.isErrorChar = true;
 
         setTimeout(() => {
           this.isErrorChar = false;
         }, 300);
 
-	//Record error and then reset test
-	this.addResults();
-	this.userInput = "";
+        //Record error and then reset test
+        this.addResults();
+        this.userInput = "";
       }
+
+      return !isSameChar || !isEndOfWord;
     },
     addResults() {
       const curr = this.time.curr;
