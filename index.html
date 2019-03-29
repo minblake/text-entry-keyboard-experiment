@@ -13,7 +13,7 @@
   </head>
   <body>
     <div id="app">
-      <section class="hero is-primary is-fullheight" :class="{'has-background-danger': isErrorChar}">
+      <section class="hero is-primary is-fullheight" :class="{ 'has-background-danger': hasTypedWrong }">
         <div class="hero-body">
           <div class="container has-text-centered">
             <div v-if="!hasExperimentStarted && !hasExperimentEnded">
@@ -98,9 +98,8 @@
                     type="text"
                     v-focus
                     v-model="userInput"
-                    @keyup="checkInputError"
-		                @keyup.enter="saveInput"
-                    @keydown.delete.prevent
+                    @keydown="isCorrectChar"
+                    @keyup="isFinished"
                     class="input is-large"
                   />
                 </div>
