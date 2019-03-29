@@ -33,7 +33,8 @@ new Vue({
     hasTrialStarted: false,
     hasTimerStarted: false,
     time: { prev: 0, curr: 0 },
-    timer: null
+    timer: null,
+    isErrorChar: false
   },
   methods: {
     startExperiment() {
@@ -68,6 +69,27 @@ new Vue({
         } else {
           this.endExperiment();
         }
+      }
+    },
+    checkInput() {
+      var currIndex;
+      var isSameChar;
+      var isEndChar;
+
+      currIndex = this.userInput.length - 1;
+      isSameChar = this.randomWord.length > currIndex && this.userInput.charAt(currIndex) == this.randomWord.charAt(currIndex);
+      isEndChar = this.randomWord.length == currIndex && this.userInput.charAt(currIndex) == '\n';
+
+      if (!isSameChar && !isEndChar){
+        this.isErrorChar = true;
+
+        setTimeout(() => {
+          this.isErrorChar = false;
+        }, 300);
+
+	//Record error and then reset test
+	this.addResults();
+	this.userInput = "";
       }
     },
     addResults() {

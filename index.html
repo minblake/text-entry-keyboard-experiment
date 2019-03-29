@@ -12,10 +12,10 @@
     <title>Text-Entry Keyboard Experiment</title>
   </head>
   <body>
-    <section class="hero is-primary is-fullheight">
-      <div class="hero-body">
-        <div class="container has-text-centered">
-          <div id="app">
+    <div id="app">
+      <section class="hero is-primary is-fullheight" :class="{'has-background-danger': isErrorChar}">
+        <div class="hero-body">
+          <div class="container has-text-centered">
             <div v-if="!hasExperimentStarted && !hasExperimentEnded">
               <h1 class="title is-spaced">
                 Text-Entry Keyboard Experiment
@@ -100,6 +100,7 @@
                     type="text"
                     v-focus
                     v-model="userInput"
+                    @keyup="checkInput"
                     @keyup.enter="saveInput"
                     @keydown.delete.prevent
                     class="input is-large"
@@ -109,8 +110,8 @@
             </div>
           </div>
         </div>
-      </div>
-    </section>
+      </section>
+    </div>
     <script src="https://cdn.jsdelivr.net/npm/vue/dist/vue.js"></script>
     <script src="app.js"></script>
   </body>
