@@ -7,7 +7,7 @@ Vue.directive("focus", {
 new Vue({
   el: "#app",
   data: {
-    MAX_NUM_TRIALS: 2,
+    MAX_NUM_TRIALS: 3,
     keyboardType: "standard",
     keyboardHeight: "small",
     words: [],
@@ -23,15 +23,15 @@ new Vue({
     numErrors: 0,
     time: { prev: 0, curr: 0 },
     timer: null,
-    errorMessage: null,
     errorMessageCountdown: 3,
-    errorMessageTimer: null
+    errorMessageTimer: null,
+    errorMessageTimeReset:null 
   },
   created() {
     // fetch("words.txt")
     //   .then(res => res.text())
     //   .then(text => (this.words = text.split("\n")));
-    this.words = ["dust", "used"];
+    this.words = ["dust", "used","dust", "used"];
   },
   methods: {
     startExperiment() {
@@ -56,9 +56,9 @@ new Vue({
     saveInput() {
       this.addResults();
       this.userInput = "";
+      this.numErrors = 0;
 
       if (this.words.length > 0) {
-        this.numErrors = 0;
         this.getRandomWord();
       } else {
         this.stopTimer();
@@ -86,28 +86,11 @@ new Vue({
         this.numErrors++;
         this.hasTypedWrong = true;
         this.userInput = "";
-        this.stopTimer();
         
         this.errorMessageTimer = setInterval(() => {
-          this.$nextTick(() => {
-            this.errorMessage = `Please Try again in ${this.errorMessageCountdown}...`;
-            this.errorMessageCountdown--;
-          });
-
-          if(this.errorMessageCountdown == 0){
-            clearInterval(this.errorMessageTimer);
-            this.errorMessageCountdown = 3;
-            this.hasTypedWrong = false;
-            this.startTimer();
-          }
+          this.errorMessageCountdown--;
+          this.resetTimer();
         }, 1000);
-/*
-        setTimeout(() => {
-            clearInterval(this.errorMessageTimer);
-            this.errorMessageCountdown = 5;
-            this.hasTypedWrong = false;
-            this.startTimer();
-          }, 3000);*/
       }
     },
     addResults() {
@@ -133,6 +116,10 @@ new Vue({
       this.hasTimerStarted = false;
       this.time = { prev: 0, curr: 0 };
       clearInterval(this.timer);
+    },
+    resetTimer(){
+      const curr = this.time.curr;
+      this.time.prev = curr;
     }
   },
   computed: {
@@ -147,6 +134,16 @@ new Vue({
     },
     downloadFileName() {
       return `${this.keyboardHeight}_${this.keyboardType}_results.csv`;
+    },
+    errorMessage(){
+        if(this.errorMessageCountdown == 0){
+          this.errorMessageCountdown = 3;
+          this.hasTypedWrong = false;
+          clearInterval(this.errorMessageTimer);
+          clearInterval(this.errorMessageTimeReset);
+        }
+
+      return `Please try again in ${this.errorMessageCountdown}...`;
     }
   }
 });

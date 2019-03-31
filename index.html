@@ -106,8 +106,8 @@
                   />
                 </div>
               </div>
-              <h2 v-if="hasTypedWrong" class="title is-2">
-                {{errorMessage}}
+              <h2 v-if="hasTypedWrong" class="title is-2" :key="errorMessageCountdown">
+                {{ errorMessage }}
               </h2>
             </div>
           </div>
