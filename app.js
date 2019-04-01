@@ -7,7 +7,7 @@ Vue.directive("focus", {
 new Vue({
   el: "#app",
   data: {
-    MAX_NUM_TRIALS: 3,
+    MAX_NUM_TRIALS: 10,
     keyboardType: "standard",
     keyboardHeight: "small",
     words: [],
@@ -25,13 +25,11 @@ new Vue({
     timer: null,
     errorMessageCountdown: 3,
     errorMessageTimer: null,
-    errorMessageTimeReset:null 
   },
   created() {
-    // fetch("words.txt")
-    //   .then(res => res.text())
-    //   .then(text => (this.words = text.split("\n")));
-    this.words = ["dust", "used","dust", "used"];
+     fetch("words.txt")
+       .then(res => res.text())
+       .then(text => (this.words = text.split("\n").filter(Boolean)));
   },
   methods: {
     startExperiment() {
@@ -140,7 +138,6 @@ new Vue({
           this.errorMessageCountdown = 3;
           this.hasTypedWrong = false;
           clearInterval(this.errorMessageTimer);
-          clearInterval(this.errorMessageTimeReset);
         }
 
       return `Please try again in ${this.errorMessageCountdown}...`;
