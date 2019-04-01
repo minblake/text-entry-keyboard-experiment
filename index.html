@@ -98,9 +98,8 @@
                   <input
                     type="text"
                     v-focus
-                    v-model="userInput"
-                    @keydown="isCorrectChar"
-                    @keyup="isFinished"
+                    ref="inputField"
+                    @input="isCorrectChar"
                     class="input is-large"
                     :disabled = hasTypedWrong
                   />
@@ -118,3 +117,4 @@
     <script src="app.js"></script>
   </body>
 </html>
+

@@ -7,7 +7,7 @@ Vue.directive("focus", {
 new Vue({
   el: "#app",
   data: {
-    MAX_NUM_TRIALS: 10,
+    MAX_NUM_TRIALS: 1,
     keyboardType: "standard",
     keyboardHeight: "small",
     words: [],
@@ -51,9 +51,10 @@ new Vue({
       this.hasExperimentStarted = false;
       this.hasTrialStarted = false;
     },
-    saveInput() {
+    saveInput(e) {
       this.addResults();
       this.userInput = "";
+      e.target.value = "";
       this.numErrors = 0;
 
       if (this.words.length > 0) {
@@ -67,16 +68,19 @@ new Vue({
         }
       }
     },
-    isFinished() {
+    isFinished(e) {
       if (this.userInput.toLowerCase() === this.randomWord) {
-        this.saveInput();
+        this.saveInput(e);
       }
     },
     isCorrectChar(e) {
-      let currIndex = this.userInput.length;
+      console.log(e);
+      this.userInput = e.target.value;
+      let currIndex = this.userInput.length - 1;
       let key = "";
-      if (/[a-zA-z]/.test(String.fromCharCode(e.which))) {
-        key = e.key.toLowerCase();
+      let currChar = this.userInput.charAt(this.userInput.length-1);
+      if (/[a-zA-z]/.test(currChar)) {
+        key = currChar.toLowerCase();
       }
 
       if (!this.hasTypedWrong && (!key || key !== this.randomWord[currIndex])) {
@@ -84,11 +88,15 @@ new Vue({
         this.numErrors++;
         this.hasTypedWrong = true;
         this.userInput = "";
+        e.target.value = "";
         
         this.errorMessageTimer = setInterval(() => {
           this.errorMessageCountdown--;
           this.resetTimer();
         }, 1000);
+      }
+      else{
+        this.isFinished(e);
       }
     },
     addResults() {
@@ -138,9 +146,13 @@ new Vue({
           this.errorMessageCountdown = 3;
           this.hasTypedWrong = false;
           clearInterval(this.errorMessageTimer);
+          this.$nextTick(() => {
+            this.$refs.inputField.focus();
+          })
         }
 
       return `Please try again in ${this.errorMessageCountdown}...`;
     }
   }
 });
+
