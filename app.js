@@ -7,7 +7,7 @@ Vue.directive("focus", {
 new Vue({
   el: "#app",
   data: {
-    MAX_NUM_TRIALS: 1,
+    MAX_NUM_TRIALS: 10,
     keyboardType: "standard",
     keyboardHeight: "small",
     words: [],
