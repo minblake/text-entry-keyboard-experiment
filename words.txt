@@ -1,15 +1,7 @@
 used
 ocean
-noiseless
 sea
-stocking
-communicate
-reaction
 canvas
 sprout
 lamp
 time
-advice
-airport
-balloon
-bottle
