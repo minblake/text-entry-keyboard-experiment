@@ -99,7 +99,7 @@
                     type="text"
                     v-focus
                     v-model="userInput"
-                    @keypress="isCorrectChar"
+                    @keydown="isCorrectChar"
                     @keyup="isFinished"
                     class="input is-large"
                     :disabled = hasTypedWrong
